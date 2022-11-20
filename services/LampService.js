@@ -44,3 +44,7 @@ export async function getState() {
         console.log("API Request failed: " + err)
     }
 }
+
+export async function getDevState() {
+    return { "state": true, "timestamp": new Date().timestamp };
+}
