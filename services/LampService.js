@@ -24,7 +24,16 @@ export async function getToggle() {
     }
 }
 
-export async function getPlt() {
+export async function getPlt({day, month}) {
+    try {
+        const res = await fetch(config.api.url + config.api.handle.plt + "?" + new URLSearchParams({
+            day: day,
+            month: month
+        }));
+        return res.json();
+    } catch(err) {
+        console.log("API Request failed " + err)
+    }
     return;
 }
 

@@ -4,7 +4,9 @@
         "handle": {
             "data": "api/data",
             "toggle": "api/toggle",
-            "state": "api/state"
+            "state": "api/state",
+            "plt": "api/plt",
+            "img": "api/plt/img"
         }
     }
 }

@@ -39,11 +39,17 @@ export default function Template() {
         )
     } else {
 
+        if (!state) {
+            return(
+                "API offline"
+            )
+        }
+
         const time = parseTime(state.log.timestamp);
         const delta = deltaTime(state.log.timestamp);
 
     return(
-        <main className='p-8 bg-neutral-50'>
+        <main className='p-8 bg-neutral-50 w-screen h-screen'>
 
             <h1
                 className='text-2xl'
