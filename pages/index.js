@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Script from "next/script";
 
 import TimeGraph from '../components/TimeGraph';
 
@@ -49,7 +50,15 @@ export default function Template() {
         const delta = deltaTime(state.log.timestamp);
 
     return(
-        <main className='p-8 bg-neutral-50 w-screen h-screen'>
+
+        <>
+        <Script src="https://kit.fontawesome.com/2ad3ea3c29.js" crossorigin="anonymous" />
+        
+        <main className='bg-neutral-50'>
+
+            <div
+                className='h-screen w-screen p-8'
+            >
 
             <h1
                 className='text-2xl'
@@ -113,11 +122,14 @@ export default function Template() {
 
                 </div>
 
-                <TimeGraph />
+                <TimeGraph />                
+
+            </div>
 
             </div>
 
         </main>
+        </>
     )
 
     }
