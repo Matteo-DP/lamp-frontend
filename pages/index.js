@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Script from "next/script";
 
-import TimeGraph from '../components/TimeGraph';
+import TimeGraph from '../src/components/InteractiveTimeGraph';
 
-import { getState, getToggle } from "../services/LampService";
-import { deltaTime, parseTime } from '../services/TimeService';
+import { getState, getToggle } from "../src/services/LampService";
+import { deltaTime, parseTime } from '../src/services/TimeService';
 
 export default function Template() {
 

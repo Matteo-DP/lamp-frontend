@@ -1,14 +1,4 @@
-import config from "../config.json";
-import devData from "../../api/data.json";
-
-export async function getData() {
-    try {
-        const res = await fetch(config.api.url + config.api.handle.data);
-        return res.json();
-    } catch(err) {
-        console.log("API Request failed: " + err);
-    }
-}
+import config from "../../config.json";
 
 export async function getToggle() {
     try {
@@ -39,4 +29,14 @@ export async function getState() {
     } catch(err) {
         console.log("API Request failed: " + err)
     }
+}
+
+export async function getGraphData({day, month}) {
+    const url = config.api.url + config.api.handle.graphdata + "?" + new URLSearchParams({
+        day: day,
+        month: month
+    });
+    console.log(url)
+    const res = await fetch(url);
+    return await res.json();
 }
