@@ -5,7 +5,14 @@ export async function getGraphData({day, month}) {
         day: day,
         month: month
     });
-    console.log(url)
+    const res = await fetch(url);
+    return await res.json();
+}
+
+export async function getMonthlyData({month}) {
+    const url = config.api.url + config.api.handle.monthlydata + "?" + new URLSearchParams({
+        month: month
+    });
     const res = await fetch(url);
     return await res.json();
 }

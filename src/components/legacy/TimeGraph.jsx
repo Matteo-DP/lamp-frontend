@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { getPlt } from "../services/LampService";
-import config from "../../config.json";
+import { getPlt } from "../../services/LampService";
+import config from "../../../config.json";
 import moment from "moment";
 
 export default function TimeGraph() {

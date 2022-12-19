@@ -1,0 +1,9 @@
+<div className="flex flex-col">
+    <div className="bg-bglight px-8 py-4 justify-self-stretch h-full rounded-md flex items-end">
+        <div>
+            <p className="inline mr-4 text-textdark">CPU temp</p>
+            <p className="inline text-textlight font-medium text-4xl">Undefined</p>
+            <p className="inline text-textdark ml-1 align-top">°C</p>
+        </div>
+    </div>
+</div>
