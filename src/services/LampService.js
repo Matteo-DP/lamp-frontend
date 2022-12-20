@@ -16,3 +16,15 @@ export async function getMonthlyData({month}) {
     const res = await fetch(url);
     return await res.json();
 }
+
+export async function getToggle() {
+    const url = config.api.url + config.api.handle.toggle;
+    const res = await fetch(url);
+    return await res.json();
+}
+
+export async function getStateData() {
+    const url = config.api.url + config.api.handle.state;
+    const res = await fetch(url);
+    return await res.json();
+}

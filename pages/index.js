@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from "react";
 import InteractiveTimeGraph from "../src/components/graph/InteractiveTimeGraph";
 import InteractiveMonthlyGraph from "../src/components/graph/InteractiveMonthlyGraph";
-import { getGraphData, getMonthlyData } from "../src/services/LampService";
+import { getGraphData, getMonthlyData, getStateData, getToggle } from "../src/services/LampService";
 import Script from "next/script";
 import Header from "../src/components/global/Header";
-
 import Datepicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 export default function Index() {
+
+    const [stateData, setStateData] = useState(undefined);
+    const [stateLoading, setStateLoading] = useState(true);
 
     const [toggleButtonHovering, setToggleButtonHovering] = useState(false);
     const [compareButtonHovering, setCompareButtonHovering] = useState(false);
@@ -29,13 +32,9 @@ export default function Index() {
         day: (new Date()).getDate(),
         month: (new Date()).getMonth() + 1 // getMonth is 0 index based
     });
-    const [compareGraphTime, setCompareGraphTime] = useState({
-        day: (new Date()).getDate() - 1, // Default to yesterday
-        month: (new Date()).getMonth() + 1 // getMonth is 0 index based
-    });
-    const [periodGraphTime, setPeriodGraphTime] = useState({
-        month: (new Date()).getMonth() + 1  // Getmonth is 0 index based, default to current month
-    });
+
+    const [compareGraphDate, setCompareGraphDate] = useState(new Date(Date.now() - 86400000)); // Default to yesterday
+    const [periodGraphDate, setPeriodGraphDate] = useState(new Date()); // Default to this month
 
     // Fetch graph data
     useEffect(() => {
@@ -52,8 +51,8 @@ export default function Index() {
     useEffect(() => {
         setCompareGraphLoading(true);
         getGraphData({
-            day: compareGraphTime.day,
-            month: compareGraphTime.month
+            day: compareGraphDate.getDate(),
+            month: compareGraphDate.getMonth() + 1 // getMonth is 0 index based
         })
             .then(res => setCompareGraphData(res))
             .finally(() => setCompareGraphLoading(false))
@@ -63,11 +62,25 @@ export default function Index() {
     useEffect(() => {
         setPeriodGraphLoading(true);
         getMonthlyData({
-            month: periodGraphTime.month
+            month: periodGraphDate.getMonth() + 1 // getMonth is 0 index based
         })
             .then(res => setPeriodGraphData(res))
             .finally(() => setPeriodGraphLoading(false))
     }, [periodGraphRefreshKey]);
+
+    useEffect(() => {
+        setStateLoading(true);
+        getStateData()
+            .then(res => setStateData(res))
+            .finally(() => setStateLoading(false))
+    }, []);
+
+    const toggleLights = async () => {
+        setStateLoading(true);
+        const res = await getToggle();
+        setStateData(res);
+        setStateLoading(false);
+    }
 
     // Generate comparative percentage
     const comparePercentage = () => {
@@ -109,9 +122,16 @@ export default function Index() {
                         <button className="h-full"
                             onMouseOver={() => setToggleButtonHovering(true)}
                             onMouseOut={() => setToggleButtonHovering(false)}
+                            onClick={() => toggleLights()}
                         >
                             <div className="bg-bglight p-8 rounded-md w-full h-full flex items-center justify-center border-2 border-accentpurpledark">
-                                <p className={`text-3xl font-medium ease-in duration-75 ${toggleButtonHovering ? "text-accentpurplelight" : "text-textlight"} `}>ON</p>
+                                <p className={`text-3xl font-medium ease-in duration-75 ${toggleButtonHovering ? "text-accentpurplelight" : "text-textlight"} `}>
+                                    {stateLoading ? 
+                                        <div>Loading...</div>
+                                    :
+                                        stateData.state ? "ON" : "OFF"
+                                    }
+                                </p>
                             </div>
                         </button>
                         <div className="bg-bglight p-8 rounded-md w-full">
@@ -123,7 +143,18 @@ export default function Index() {
                         </div>
                         <div className="bg-bglight p-8 rounded-md w-full">
                             <p className="text-textdark mb-2">Last toggle</p>
-                            <p className="text-textlight font-medium text-4xl">Undefined</p>
+                                {stateLoading ?
+                                    <div className="text-textlight font-medium text-3xl">Loading...</div>
+                                :
+                                    <>
+                                        <p className="text-textlight font-medium text-3xl inline mr-4">
+                                            {new Date(stateData.log.timestamp * 1000).toLocaleTimeString()}
+                                        </p>
+                                        <p className="inline text-accentpurple">
+                                            {new Date(stateData.log.timestamp * 1000).toLocaleDateString()}
+                                        </p>
+                                    </>
+                                }
                         </div>
                     </div>
                     <div className="bg-bglight pt-8 pb-2 px-10 w-max rounded-md">
@@ -146,9 +177,16 @@ export default function Index() {
                             onMouseOut={() => setCompareButtonHovering(false)}
                         >
                             Compare to
-                            <button className="text-accentpurple ml-2 inline border px-2 py-1 border-[#8884d8] rounded-lg">
-                                <i class={`fa-solid fa-chevron-down mr-1 ease-in duration-75 ${compareButtonHovering && "scale-125"}`}></i>
-                                yesterday
+                            <button className="ml-2 inline border px-2 py-1 border-[#8884d8] rounded-lg">
+                                <i class={`fa-solid text-accentpurple fa-chevron-down mr-2 ease-in duration-75 ${compareButtonHovering && "scale-125"}`}></i>
+                                <div className="inline-block">
+                                    <Datepicker selected={compareGraphDate} 
+                                        onChange={(date) => {
+                                            setCompareGraphDate(date)
+                                            setCompareGraphRefreshKey(compareGraphRefreshKey + 1)
+                                        }}
+                                    />
+                                </div>
                             </button>
                         </p>
                         <div className="bg-bglighter py-4 px-8 rounded-md w-full mb-4">
@@ -172,9 +210,18 @@ export default function Index() {
                             onMouseLeave={() => setMonthlyButtonHovering(false)}
                         >
                             Compare to time period
-                            <button className="text-accentpurple ml-2 inline border px-2 py-1 border-accentpurple rounded-lg">
-                                <i class={`fa-solid fa-chevron-down mr-1 ease-in duration-75 ${monthlyButtonHovering && "scale-125"}`}></i>
-                                last month
+                            <button className="ml-2 inline border px-2 py-1 border-accentpurple rounded-lg">
+                                <i class={`fa-solid text-accentpurple fa-chevron-down mr-1 ease-in duration-75 ${monthlyButtonHovering && "scale-125"}`}></i>
+                                <div className="inline-block">
+                                    <Datepicker selected={periodGraphDate} 
+                                        onChange={(date) => {
+                                            setPeriodGraphDate(date)
+                                            setPeriodGraphRefreshKey(periodGraphRefreshKey + 1)
+                                        }}
+                                        dateFormat="MM"
+                                        showMonthYearPicker
+                                    />
+                                </div>
                             </button>
                         </p>
                         <div className="flex flex-row justify-items-stretch gap-4">
