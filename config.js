@@ -1,6 +1,6 @@
 const config = {
     "api": {
-        "url": process.env.API_URL || "http://192.168.0.205:5000/",
+        "url": process.env.NEXT_PUBLIC_API_URL || "http://192.168.0.205:5000/",
         "handle": {
             "data": "api/data",
             "toggle": "api/toggle",
