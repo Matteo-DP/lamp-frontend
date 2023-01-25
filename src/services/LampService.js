@@ -1,4 +1,4 @@
-import config from "../../config.json";
+import config from "../../config.js";
 
 export async function getGraphData({day, month}) {
     const url = config.api.url + config.api.handle.graphdata + "?" + new URLSearchParams({
