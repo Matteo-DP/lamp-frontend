@@ -33,7 +33,7 @@ export default function Login() {
         <main className='bg-bgdark w-screen h-screen flex justify-center items-center'>
             <div className='bg-bgdark sm:border sm:border-bglight sm:shadow-2xl w-full max-w-sm px-8 py-8 rounded-xl'>
                 <form onSubmit={handleSubmit}>
-                    <h1 className='text-2xl text-accentpurple mb-8'>Please login to continue</h1>
+                    <h1 className='text-2xl text-accentpurple mb-8 text-center'>Please <strong>login</strong> to continue</h1>
                     <p className='text-textlight mb-2'>
                         Email:
                     </p>

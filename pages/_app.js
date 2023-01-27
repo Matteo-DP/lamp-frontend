@@ -6,7 +6,7 @@ export default function MyApp({ Component, pageProps }) {
   return(
     <>
       <Head>
-        <title>Lamp Dashboard | Matteo De Pauw</title>
+        <title> Dashboard | Matteo De Pauw</title>
       </Head>
       <AuthProvider>
         <Component {...pageProps} />
